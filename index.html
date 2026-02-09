@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>My Valentine 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffb3c0, #ff7eb3);
+      color: white;
+      text-align: center;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float linear infinite;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+    }
+
+    .heart::after {
+      left: -10px;
+    }
+
+    @keyframes float {
+      from {
+        transform: translateY(100vh) rotate(45deg);
+        opacity: 0
+      }
+
+      to {
+        transform: translateY(-10vh) rotate(45deg);
+        opacity: 1
+      }
+    }
+
+    /* Layout */
+    .container {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 70vh;
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 48px);
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: clamp(16px, 2.5vw, 22px);
+      margin-bottom: 20px;
+      max-width: 600px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .gallery img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, .6);
+    }
+
+    /* Question Section */
+    #questionBox {
+      position: fixed;
+      bottom: 15vh;
+      width: 100%;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 14px 28px;
+      font-size: clamp(16px, 2.5vw, 22px);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    #yesBtn {
+      background: #fff;
+      color: #ff4d6d;
+    }
+
+    #noBtn {
+      background: #ff4d6d;
+      color: #fff;
+      position: relative;
+    }
+
+    #result {
+      font-size: clamp(24px, 5vw, 36px);
+      margin-top: 20px;
+      display: none;
+    }
+
+    /* Small screens tweaks */
+    @media(max-width:500px) {
+      .container {
+        height: 65vh
+      }
+
+      button {
+        padding: 12px 22px
+      }
+    }
+
+    /* Celebration overlay */
+    #celebration {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      display: none;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 18px;
+      background: white;
+      opacity: 0.8;
+      animation: fall 4s linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Graffiti texts */
+    .graffiti {
+      position: absolute;
+      font-weight: bold;
+      font-size: clamp(24px, 4vw, 48px);
+      animation: pop 2s ease forwards;
+      text-shadow: 0 0 15px rgba(255, 255, 255, .9);
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      60% {
+        transform: scale(1.3);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Big heart explosion */
+    .bigHeart {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 120px;
+      animation: boom 1s ease forwards;
+    }
+
+    @keyframes boom {
+      to {
+        transform: translate(-50%, -50%) scale(1.4);
+      }
+    }
+
+    /* Glow effect when YES clicked */
+    body.celebrate {
+      animation: glowBg 2s infinite alternate;
+    }
+
+    @keyframes glowBg {
+      from {
+        filter: brightness(1);
+      }
+
+      to {
+        filter: brightness(1.25);
+      }
+    }
+
+    /* Dark overlay when YES is clicked */
+    #bgOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0);
+      pointer-events: none;
+      transition: 0.8s ease;
+      z-index: 0;
+    }
+
+    body.dimmed #bgOverlay {
+      background: rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="bgOverlay"></div>
+  <div id="hearts"></div>
+
+  <div class="container">
+    <h1>For My Happy Place (Khushi) 💕</h1>
+    <p>You make my world brighter, happier and slightly more chaotic. 😜</p>
+
+    <div class="gallery">
+      <!-- PUT HER PHOTOS HERE -->
+      <img src="img1.jpg">
+      <img src="img2.jpg">
+      <img src="img3.jpg">
+      <img src="img4.jpg">
+    </div>
+  </div>
+
+  <div id="questionBox">
+    <h1>Khushiii, Will you be my Valentine? ❤️</h1>
+    <div class="buttons">
+      <button id="yesBtn">YES 💖</button>
+      <button id="noBtn">NO 😢</button>
+    </div>
+    <div id="result">Yayyyyy!!! I love you Baebyyy 💞</div>
+  </div>
+
+  <div id="celebration"></div>
+
+  <script>
+    // Hearts generator
+    for (let i = 0; i < 30; i++) {
+      let heart = document.createElement("div");
+      heart.className = "heart";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 4 + Math.random() * 6 + "s";
+      document.getElementById("hearts").appendChild(heart);
+    }
+
+    // No button trolling texts 😈
+    const texts = [
+      "Why are you saying no BHONDU?",
+      "Think again, PLEASEEE😭",
+      "Wrong answer, You Dumb!",
+      "Don't break my heart 💔",
+      "Try again Cutie 🥺",
+      "Are you sure Baeby?",
+      "This hurts Darlo😭",
+      "Khushi, Please reconsider my Khushi",
+      "Nice try, I'm not going anywhere😏",
+      "Still no?? 😡"
+    ];
+
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    let index = 0;
+
+    function moveButton() {
+      const btnWidth = noBtn.offsetWidth;
+      const btnHeight = noBtn.offsetHeight;
+      const maxX = window.innerWidth - btnWidth - 20;
+      const maxY = window.innerHeight - btnHeight - 20;
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+      noBtn.style.position = "fixed";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // Desktop hover
+    if (!isMobile) {
+      noBtn.addEventListener("mouseover", () => {
+        noBtn.innerText = texts[index % texts.length];
+        index++;
+        moveButton();
+      });
+    }
+
+    // Mobile click
+    noBtn.addEventListener("click", () => {
+      noBtn.innerText = texts[index % texts.length];
+      index++;
+      moveButton();
+    });
+
+    yesBtn.onclick = () => {
+      document.getElementById("result").style.display = "block";
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
+
+      const celebration = document.getElementById("celebration");
+      celebration.style.display = "block";
+      document.body.classList.add("celebrate");
+      document.body.classList.add("dimmed");
+
+
+      // BIG HEART EXPLOSION 💥
+      const heart = document.createElement("div");
+      heart.className = "bigHeart";
+      heart.innerHTML = "💖";
+      celebration.appendChild(heart);
+
+      // CONFETTI BURST 🎊
+      for (let i = 0; i < 120; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.top = "-10px";
+        confetti.style.background = `hsl(${Math.random() * 360},80%,60%)`;
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        celebration.appendChild(confetti);
+      }
+
+      // GRAFFITI LOVE TEXTS 💘
+      const messages = [
+        "She said YES 💖",
+        "Love Wins 😍",
+        "Best Day Ever 🎉",
+        "Khushi ❤️",
+        "Forever Begins ✨",
+        "Yessssss 🥳"
+      ];
+
+      for (let i = 0; i < 12; i++) {
+        const text = document.createElement("div");
+        text.className = "graffiti";
+        text.innerText = messages[Math.floor(Math.random() * messages.length)];
+        text.style.left = Math.random() * 80 + "vw";
+        text.style.top = Math.random() * 80 + "vh";
+        text.style.color = `hsl(${Math.random() * 360},80%,70%)`;
+        celebration.appendChild(text);
+      }
+    };
+
+  </script>
+
+</body>
+
+</html>
